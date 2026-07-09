@@ -12,6 +12,7 @@ def init():
 def upload_csv():
     df = pd.read_csv('antibodies.csv')
     db = firestore.client()
+    
     for row in df.itertuples(index=False):
         print(row.Name)
         data = {
@@ -37,4 +38,7 @@ def upload_csv():
             "raised_in": row.Raised_In,
             "recognizes": row.Recognizes
         }
+        # Replace NaN values with None for API calls
+        data = {k: None if pd.isna(v) else v for k, v in data.items()}
         db.collection("dyes").document(row.ID).set(data)
+        

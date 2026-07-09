@@ -28,11 +28,20 @@ def get_dye(dye_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.post("/dyes/{dye_id}")
+@app.post("/dyes/update/{dye_id}")
 def update_dye(dye_id: str, dye_data: dict):
     try:
         dye_ref = db.collection("dyes").document(dye_id)
         dye_ref.set(dye_data, merge=True)
         return {"message": "Dye updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.delete("/dyes/delete/{dye_id}")
+def delete_dye(dye_id: str):
+    try:
+        dye_ref = db.collection("dyes").document(dye_id)
+        dye_ref.delete()
+        return {"message": "Dye deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
