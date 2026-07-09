@@ -41,4 +41,3 @@ def upload_csv():
         # Replace NaN values with None for API calls
         data = {k: None if pd.isna(v) else v for k, v in data.items()}
         db.collection("dyes").document(row.ID).set(data)
-        
