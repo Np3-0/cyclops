@@ -1,0 +1,1 @@
+If you get an `Could not find module 'libdmtx-64.dll'` error, please download [Visual C++ 2013 redistributable (x64)](https://www.microsoft.com/en-us/download/details.aspx?id=40784)
