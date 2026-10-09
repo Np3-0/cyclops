@@ -1,7 +1,7 @@
 import cv2
 from pylibdmtx.pylibdmtx import decode
 import webbrowser
-import constants
+import constants as constants
 
 def scan_matrix():
     found = False
