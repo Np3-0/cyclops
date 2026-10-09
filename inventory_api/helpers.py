@@ -1,15 +1,16 @@
-import firebase_admin
-from firebase_admin import credentials, firestore
-import pandas as pd
+# this does not work locally, only deployed
 
-# Path to your downloaded private key file
-cred = credentials.Certificate("service_key.json")
+import firebase_admin
+from firebase_admin import firestore
+
 
 # Initialize the default app
 def init():
-    firebase_admin.initialize_app(cred)
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app()
     
 def upload_csv():
+    import pandas as pd
     df = pd.read_csv('antibodies.csv')
     db = firestore.client()
     

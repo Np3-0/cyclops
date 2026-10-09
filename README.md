@@ -8,5 +8,5 @@
 6. Download all dependencies with `pip install -r requirements.txt`
 7. To run the API, use `uvicorn main:app --reload`, which will run it at `localhost:8000`.
 
-If you get an `Could not find module 'libdmtx-64.dll'` error, please download [Visual C++ 2013 redistributable (x64)](https://www.microsoft.com/en-us/download/details.aspx?id=40784)
+If you get an `Could not find module 'libdmtx-64.dll'` error, please download [Visual C++ 2013 redistributable (x64)](https://www.microsoft.com/en-us/download/details.aspx?id=40784).
 
