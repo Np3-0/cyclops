@@ -1,5 +1,4 @@
 from PySide6.QtCore import Signal, QObject 
-import constants
 from pylibdmtx.pylibdmtx import decode
 import cv2
 import time
@@ -7,6 +6,7 @@ import requests
 
 class Camera(QObject):
     frame_captured = Signal(object)
+    dye_found = Signal(dict)
     last_code = ""
     
     def __init__(self, cam, parent=None):
@@ -36,8 +36,13 @@ class Camera(QObject):
                 # prevents api from calling same code twice in a row
                 if (text != self.last_code):
                     self.last_code = text
-                    res = requests.get(f"https://inventory-api-892294444215.us-east1.run.app/dyes/{text}")
-                    print(res.text)
+                    try:
+                        res = requests.get(f"https://inventory-api-892294444215.us-east1.run.app/dyes/{text}", timeout=5)
+                        res.raise_for_status()
+                        self.dye_found.emit(res.json())
+                    except requests.RequestException as e:
+                        print(f"API Error: {e}")
+                    
                 
                 time.sleep(0.5)
             

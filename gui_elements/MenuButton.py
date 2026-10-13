@@ -9,7 +9,7 @@ class MenuButton(QWidget):
 
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.layoutA = QHBoxLayout(self)
-        self.layoutA.setContentsMargins(15, 10, 15, 10)
+        self.layoutA.setContentsMargins(15, 20, 15, 25)
 
         self.numberIcon = QLabel(text[0], self)
         self.numberIcon.setObjectName("numberIcon")
@@ -23,7 +23,7 @@ class MenuButton(QWidget):
         self.setStyleSheet(f"""
             MenuButton {{
                 background-color: {constants.primary_bg};
-                border: 1px solid {constants.primary_accent};
+                border: 2px solid {constants.primary_accent};
                 border-radius: 10px;
                 max-height: 100px;
             }}
@@ -32,7 +32,7 @@ class MenuButton(QWidget):
                 margin: 0px;
                 padding: 0px;
                 border-radius: 15px;
-                border: 1px solid {constants.primary_accent};
+                border: 2px solid {constants.primary_accent};
                 color: {constants.primary_accent};
                 font-weight: bold;
                 background: transparent;

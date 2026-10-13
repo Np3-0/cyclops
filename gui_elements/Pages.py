@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
     QGraphicsPixmapItem, QStackedWidget, QGraphicsScene,
     QGraphicsView, QLabel, QVBoxLayout, QWidget
 )
-from gui_elements import Camera
+from gui_elements import Camera, ResultPopup
 
 PAGE_INFO, PAGE_DYES, PAGE_CAMERA, PAGE_RESULTS = range(4)
 
@@ -36,8 +36,9 @@ class CameraPage(QWidget):
         self.camera.moveToThread(self.camera_thread)
         self.camera.frame_captured.connect(self.process_frame)
         self.camera_thread.started.connect(self.camera.run)
+        self.camera.dye_found.connect(self.show_result)
         self.camera_thread.start()
-    
+        
     def stop_cam(self):
         if self.camera_thread is None: return
         
@@ -78,6 +79,10 @@ class CameraPage(QWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         if self.scenePixmapItem is not None: self.fit()
+        
+    def show_result(self, dye_info):
+        popup = ResultPopup(dye_info, parent=self)
+        popup.show()
         
 class PageStack(QStackedWidget):
     def __init__(self):
