@@ -7,6 +7,7 @@ import requests
 
 class Camera(QObject):
     frame_captured = Signal(object)
+    last_code = ""
     
     def __init__(self, cam, parent=None):
         super().__init__(parent)
@@ -25,15 +26,18 @@ class Camera(QObject):
             result = decode(gray, max_count=1)
             if result:
                 code = result[0]
-                
                 # draws rectangle where the code is
                 rect = code.rect
                 y = frame.shape[0] - rect.top - rect.height
                 cv2.rectangle(frame, (rect.left, y), (rect.left + rect.width, y + rect.height), (0, 255, 0), 3)
                 
                 text = code.data.decode("utf-8")
-                res = requests.get(f"https://inventory-api-892294444215.us-east1.run.app/dyes/{text}")
-                print(res.text)
+
+                # prevents api from calling same code twice in a row
+                if (text != self.last_code):
+                    self.last_code = text
+                    res = requests.get(f"https://inventory-api-892294444215.us-east1.run.app/dyes/{text}")
+                    print(res.text)
                 
                 time.sleep(0.5)
             
