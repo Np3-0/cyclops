@@ -3,10 +3,12 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QWidget, QApplication
 import constants
 from gui_elements import MenuButton
+from gui_elements.Pages import PageStack, PAGE_DYES, PAGE_CAMERA, PAGE_RESULTS
 
 class Background(QWidget):
     def __init__(self):
         super().__init__()
+        
         self.title_text = QLabel("Inventory Management System", alignment=Qt.AlignTop | Qt.AlignHCenter)
         self.title_text.setObjectName("titleText")
         self.main_layout = QVBoxLayout(self)
@@ -18,11 +20,12 @@ class Background(QWidget):
         self.left_panel_layout.setContentsMargins(25, 25, 25, 25)
 
         self.left_menu_dyes_button = MenuButton(["1.", "Input Dyes"])
-        self.left_menu_dyes_button.clicked.connect(self.testButton)
         self.left_menu_camera_button = MenuButton(["2.", "Open Scanner"])
-        self.left_menu_camera_button.clicked.connect(self.testButton)
         self.left_menu_results_button = MenuButton(["3.", "View Results"])
-        self.left_menu_results_button.clicked.connect(self.testButton)
+        
+        self.left_menu_dyes_button.clicked.connect(lambda _=False: self.pages.show_page(PAGE_DYES))
+        self.left_menu_camera_button.clicked.connect(lambda _=False: self.pages.show_page(PAGE_CAMERA))
+        self.left_menu_results_button.clicked.connect(lambda _=False: self.pages.show_page(PAGE_RESULTS))
 
         self.left_panel_layout.addWidget(self.left_menu_dyes_button)
         self.left_panel_layout.addWidget(self.left_menu_camera_button)
@@ -32,8 +35,9 @@ class Background(QWidget):
         self.right_menu_panel.setObjectName("rightMenuPanel")
         self.right_panel_layout = QVBoxLayout(self.right_menu_panel)
         
-        self.right_menu_text = QLabel("Info", alignment=Qt.AlignTop | Qt.AlignHCenter)
-        self.right_panel_layout.addWidget(self.right_menu_text)
+        self.pages = PageStack()
+        self.right_panel_layout.addWidget(self.pages)
+        
         
         self.menu_layout = QHBoxLayout()
         
@@ -43,9 +47,10 @@ class Background(QWidget):
         self.main_layout.addWidget(self.title_text, 0)
         self.main_layout.addLayout(self.menu_layout, 1)
 
-    def testButton(self):
-        print("TEST")
-        
+    def close_event(self, event):
+        self.pages.shutdown()
+        super().closeEvent(event)
+
 if __name__ == "__main__":
     app = QApplication([])
 
