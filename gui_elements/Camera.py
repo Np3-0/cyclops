@@ -23,7 +23,7 @@ class Camera(QObject):
             
             # turn frame gray specifically for data matrix
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            result = decode(gray, max_count=1)
+            result = decode(gray, max_count=1, timeout=100)
             if result:
                 code = result[0]
                 # draws rectangle where the code is
@@ -37,7 +37,7 @@ class Camera(QObject):
                 if (text != self.last_code):
                     self.last_code = text
                     try:
-                        res = requests.get(f"https://inventory-api-892294444215.us-east1.run.app/dyes/{text}", timeout=5)
+                        res = requests.get(f"https://inventory-api-892294444215.us-east1.run.app/dyes/{text}")
                         res.raise_for_status()
                         self.dye_found.emit(res.json())
                     except requests.RequestException as e:

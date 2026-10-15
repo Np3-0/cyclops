@@ -8,13 +8,14 @@ class ResultPopup(QDialog):
         super().__init__(parent)
         self.dye_info = dye_info
         self.setWindowTitle("Dye Info")
-        self.resize(480, 660)
+        self.resize(480, 540)
         self.layout = QVBoxLayout(self)
         
         self.title_widget = QWidget()
-        self.title_widget.setAttribute(Qt.WA_StyledBackground, True)
         self.title_widget.setObjectName("titleWidget")
         self.title_widget_layout = QVBoxLayout(self.title_widget)
+        self.title_widget.setAttribute(Qt.WA_StyledBackground, True)
+
         self.title_widget_layout.setSpacing(15)
         self.title_widget_layout.setContentsMargins(25, 25, 25, 25)
         
@@ -34,8 +35,33 @@ class ResultPopup(QDialog):
         self.title_widget_layout.addLayout(self.expire_layout)
         
         self.layout.addWidget(self.title_widget)
+
+        self.info_widget = QWidget()
+        self.info_widget.setObjectName("infoWidget")
+        self.info_widget_layout = QVBoxLayout(self.info_widget)
+        self.info_widget.setAttribute(Qt.WA_StyledBackground, True)
+        self.info_widget_layout.setSpacing(15)
+        self.info_widget_layout.setContentsMargins(25, 25, 25, 25)
+
+        self.description = QLabel(f"Description: {dye_info['description']}", alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
+        self.info_widget_layout.addWidget(self.description)
+        self.antigen_layout = QHBoxLayout()
+        self.antigen = QLabel(f"Antigen: {dye_info['antigen']}")
+        self.conjugation = QLabel(f"Conjugation: {dye_info['conjugation']}")
+        self.antigen_layout.addWidget(self.antigen)
+        self.antigen_layout.addWidget(self.conjugation)
+        self.info_widget_layout.addLayout(self.antigen_layout)
+
+        self.clone_layout = QHBoxLayout()
+        self.clone = QLabel(f"Clone: {dye_info['clone']}")
+        self.clonality = QLabel(f"Clonality: {dye_info['clonality']}")
+        self.clone_layout.addWidget(self.clone)
+        self.clone_layout.addWidget(self.clonality)
+        self.info_widget_layout.addLayout(self.clone_layout)
+
+        self.layout.addWidget(self.info_widget)
         
-        shown = {"name", "id", "date_received", "expiration_date"}
+        shown = {"name", "id", "date_received", "expiration_date", "antigen", "conjugation", "clonality", "clone"}
         for key, value in dye_info.items():
             if key not in shown:
                 self.layout.addWidget(QLabel(f"{key}: {value}"))
@@ -46,7 +72,7 @@ class ResultPopup(QDialog):
         self.layout.addWidget(self.confirm_button)
             
         self.setStyleSheet(f"""
-            QWidget#titleWidget {{
+            QWidget#titleWidget, QWidget#infoWidget{{
                 background: {constants.secondary_bg};
                 border: 2px solid {constants.primary_accent};
                 border-radius: 10px;
