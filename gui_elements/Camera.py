@@ -3,6 +3,8 @@ from pylibdmtx.pylibdmtx import decode
 import cv2
 import time
 import requests
+import pandas as pd
+from utils.get_data import get_dye_data, get_data_from_matrix
 
 class Camera(QObject):
     frame_captured = Signal(object)
@@ -37,9 +39,9 @@ class Camera(QObject):
                 if (text != self.last_code):
                     self.last_code = text
                     try:
-                        res = requests.get(f"https://inventory-api-892294444215.us-east1.run.app/dyes/{text}")
-                        res.raise_for_status()
-                        self.dye_found.emit(res.json())
+                        data = get_dye_data()
+                        res = get_data_from_matrix(data, text)
+                        self.dye_found.emit(res)
                     except requests.RequestException as e:
                         print(f"API Error: {e}")
                     

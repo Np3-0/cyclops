@@ -4,6 +4,9 @@ from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QWidget, QApplic
 import constants
 from gui_elements import MenuButton
 from gui_elements.Pages import PageStack, PAGE_DYES, PAGE_CAMERA, PAGE_RESULTS
+import sys, traceback
+
+sys.excepthook = lambda t, v, tb: traceback.print_exception(t, v, tb)
 
 class Background(QWidget):
     def __init__(self):
