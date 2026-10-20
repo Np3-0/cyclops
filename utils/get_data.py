@@ -8,6 +8,11 @@ def get_dye_data():
     formatted = data['json']['antibodies']
     return pd.DataFrame(formatted)
 
+def get_dye_from_info(marker: str, dye: str):
+    data = get_dye_data()
+    results = data[(data['marker'] == marker) & (data['dye'] == dye)]
+    return results.to_dict(orient='records') 
+
 def get_sequence_data():
     pass
 
@@ -19,5 +24,3 @@ def get_data_from_matrix(data: pd.DataFrame, id):
         return None
     
     return match.iloc[0].to_dict()
-    
-    
