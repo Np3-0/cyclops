@@ -1,5 +1,4 @@
 from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QPushButton
-from PySide6.QtCore import Qt
 import constants
 
 class ResultPopup(QDialog):

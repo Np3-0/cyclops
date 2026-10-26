@@ -9,9 +9,9 @@ def get_dye_data():
     formatted = data['json']['antibodies']
     return pd.DataFrame(formatted)
 
-def get_dye_from_info(marker: str, dye: str):
+def get_dye_from_info(marker: str, dye: str, box: str):
     data = get_dye_data()
-    results = data[(data['marker'] == marker) & (data['dye'] == dye)]
+    results = data[(data['marker'] == marker) & (data['dye'] == dye) & (data['box'] == box)]
     return results.to_dict(orient='records') 
 
 def get_sequence_data():
@@ -95,4 +95,5 @@ def get_data_from_pdf(path: str):
     return out
     
 if __name__ == "__main__":
-    print(type(json.dumps(get_data_from_pdf("../data/test_pdf.pdf"), indent=2, ensure_ascii=False)))
+    data = get_data_from_pdf("../data/test_pdf.pdf")
+    print(data["multiplier"]) 
