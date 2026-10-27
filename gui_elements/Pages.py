@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QGraphicsView, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QPushButton,
     QFileDialog
 )
-from gui_elements import Camera, ResultPopup
+from gui_elements import Camera, ResultPopup, DataCarousel
 import constants
 from utils.get_data import get_data_from_pdf
 
@@ -91,6 +91,7 @@ class InputPage(QWidget):
     def __init__(self):
         super().__init__()
         self.file_data = None
+        self.data_carousel = None
         
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.main_layout = QVBoxLayout(self)
@@ -108,9 +109,6 @@ class InputPage(QWidget):
         self.upload_layout.addWidget(self.upload_button)
         
         self.main_layout.addWidget(self.upload_widget)
-        
-        if self.file_data is not None:
-            pass
         
         self.setStyleSheet(f"""
             QPushButton#uploadButton {{
@@ -131,9 +129,18 @@ class InputPage(QWidget):
             filter="PDF Files (*.pdf)"
         )
         
-        if path:
-            self.file_data = get_data_from_pdf(path)
-            print(self.file_data)
+        if not path: return
+        
+        self.file_data = get_data_from_pdf(path)
+        print(self.file_data['steps'][0])
+        self.show_carousel()
+    
+    def show_carousel(self):
+        if self.data_carousel is not None:
+            self.main_layout.removeWidget(self.data_carousel)
+            self.data_carousel.deleteLater()
+        self.data_carousel = DataCarousel(self.file_data)
+        self.main_layout.addWidget(self.data_carousel)
             
  
 class PageStack(QStackedWidget):
