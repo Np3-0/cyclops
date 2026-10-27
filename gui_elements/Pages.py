@@ -109,6 +109,9 @@ class InputPage(QWidget):
         
         self.main_layout.addWidget(self.upload_widget)
         
+        if self.file_data is not None:
+            pass
+        
         self.setStyleSheet(f"""
             QPushButton#uploadButton {{
                 border: 2px solid {constants.primary_accent};
@@ -129,7 +132,8 @@ class InputPage(QWidget):
         )
         
         if path:
-            self.file_datadata = get_data_from_pdf(path)
+            self.file_data = get_data_from_pdf(path)
+            print(self.file_data)
             
  
 class PageStack(QStackedWidget):
