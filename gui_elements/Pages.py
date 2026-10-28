@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, QThread
+from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import (
     QGraphicsPixmapItem, QStackedWidget, QGraphicsScene,
@@ -88,6 +88,7 @@ class CameraPage(QWidget):
         popup.show()
 
 class InputPage(QWidget):
+    confirmed = Signal()
     def __init__(self):
         super().__init__()
         self.file_data = None
@@ -100,25 +101,31 @@ class InputPage(QWidget):
         self.upload_widget.setObjectName("uploadWidget")
         self.upload_layout = QHBoxLayout(self.upload_widget)
         self.upload_text = QLabel("Upload PDF")
+        
         self.upload_button = QPushButton("Upload file")
         self.upload_button.setObjectName("uploadButton")
         self.upload_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.upload_button.clicked.connect(self.upload_file)
+        self.confirm_button = QPushButton("Confirm")
+        self.confirm_button.setObjectName("confirmButton")
+        self.confirm_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.confirm_button.clicked.connect(self.confirm_upload)
         
         self.upload_layout.addWidget(self.upload_text)
         self.upload_layout.addWidget(self.upload_button)
+        self.upload_layout.addWidget(self.confirm_button)
         
         self.main_layout.addWidget(self.upload_widget)
         
         self.setStyleSheet(f"""
-            QPushButton#uploadButton {{
+            QPushButton#uploadButton, QPushButton#confirmButton {{
                 border: 2px solid {constants.primary_accent};
                 border-radius: 10px;
-                max-height: 75px;
+                min-height: 50px;
                 background: {constants.secondary_bg};
                 font-size: 18px;
                 font-weight: bold;
-            }}   
+            }}
         """)
          
     def upload_file(self):
@@ -132,8 +139,12 @@ class InputPage(QWidget):
         if not path: return
         
         self.file_data = get_data_from_pdf(path)
-        print(self.file_data['steps'][0])
         self.show_carousel()
+    
+    def confirm_upload(self):
+        if self.file_data is None: return
+        # set to camera page index
+        self.confirmed.emit()
     
     def show_carousel(self):
         if self.data_carousel is not None:
@@ -142,12 +153,12 @@ class InputPage(QWidget):
         self.data_carousel = DataCarousel(self.file_data)
         self.main_layout.addWidget(self.data_carousel)
             
- 
 class PageStack(QStackedWidget):
     def __init__(self):
         super().__init__()
         self.camera_page = CameraPage(0)
         self.input_page = InputPage()
+        self.input_page.confirmed.connect(lambda: self.show_page(PAGE_CAMERA))
         
         self.addWidget(make_label_page("INFO"))
         self.addWidget(self.input_page)
