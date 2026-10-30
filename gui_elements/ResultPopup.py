@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QPushButton
+from PySide6.QtCore import Qt
 import constants
 
 class ResultPopup(QDialog):
-    
     def __init__(self, dye_info: dict, parent=None):
         super().__init__(parent)
         self.dye_info = dye_info
@@ -10,61 +10,70 @@ class ResultPopup(QDialog):
         self.resize(480, 540)
         self.layout = QVBoxLayout(self)
         
-        # self.title_widget = QWidget()
-        # self.title_widget.setObjectName("titleWidget")
-        # self.title_widget_layout = QVBoxLayout(self.title_widget)
-        # self.title_widget.setAttribute(Qt.WA_StyledBackground, True)
+        self.title_widget = QWidget()
+        self.title_widget.setObjectName("titleWidget")
+        self.title_widget_layout = QVBoxLayout(self.title_widget)
+        self.title_widget.setAttribute(Qt.WA_StyledBackground, True)
 
-        # self.title_widget_layout.setSpacing(15)
-        # self.title_widget_layout.setContentsMargins(25, 25, 25, 25)
+        self.title_widget_layout.setSpacing(15)
+        self.title_widget_layout.setContentsMargins(25, 25, 25, 25)
         
-        # self.dye_name = QLabel(self.dye_info['name'], alignment=Qt.AlignTop | Qt.AlignHCenter)
-        # self.dye_name.setObjectName("dyeName")
-        # self.title_widget_layout.addWidget(self.dye_name)
+        self.dye_name = QLabel(f"{self.dye_info['marker']} - {self.dye_info['dye']}", alignment=Qt.AlignTop | Qt.AlignHCenter)
+        self.dye_name.setObjectName("dyeName")
+        self.title_widget_layout.addWidget(self.dye_name)
         
-        # self.dye_id = QLabel(f"ID: {self.dye_info['id']}")
-        # self.dye_id.setObjectName("dyeID")
-        # self.title_widget_layout.addWidget(self.dye_id, alignment=Qt.AlignTop | Qt.AlignHCenter)
+        self.dye_id = QLabel(f"ID: {self.dye_info['itemId']}", alignment=Qt.AlignTop | Qt.AlignHCenter)
+        self.dye_id.setObjectName("dyeID")
+        self.title_widget_layout.addWidget(self.dye_id)
         
-        # self.expire_layout = QHBoxLayout()
-        # self.date_received = QLabel(f"Date Received: {self.dye_info['date_received']}")
-        # self.expire_date = QLabel(f"Expiration Date: {self.dye_info['expiration_date']}")
-        # self.expire_layout.addWidget(self.date_received)
-        # self.expire_layout.addWidget(self.expire_date)
-        # self.title_widget_layout.addLayout(self.expire_layout)
+        self.expire_layout = QHBoxLayout()
+        self.date_received = QLabel(f"Date Received: {self.dye_info['dateReceived'][:10]}")
+        self.expire_date = QLabel(f"Expiration Date: {self.dye_info['expirationDate'][:10]}")
+        self.expire_layout.addWidget(self.date_received)
+        self.expire_layout.addWidget(self.expire_date)
+        self.title_widget_layout.addLayout(self.expire_layout)
         
-        # self.layout.addWidget(self.title_widget)
+        self.layout.addWidget(self.title_widget)
 
-        # self.info_widget = QWidget()
-        # self.info_widget.setObjectName("infoWidget")
-        # self.info_widget_layout = QVBoxLayout(self.info_widget)
-        # self.info_widget.setAttribute(Qt.WA_StyledBackground, True)
-        # self.info_widget_layout.setSpacing(15)
-        # self.info_widget_layout.setContentsMargins(25, 25, 25, 25)
+        self.info_widget = QWidget()
+        self.info_widget.setObjectName("infoWidget")
+        self.info_widget_layout = QVBoxLayout(self.info_widget)
+        self.info_widget.setAttribute(Qt.WA_StyledBackground, True)
+        self.info_widget_layout.setSpacing(15)
+        self.info_widget_layout.setContentsMargins(25, 25, 25, 25)
 
-        # self.description = QLabel(f"Description: {dye_info['description']}", alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
-        # self.info_widget_layout.addWidget(self.description)
-        # self.antigen_layout = QHBoxLayout()
-        # self.antigen = QLabel(f"Antigen: {dye_info['antigen']}")
-        # self.conjugation = QLabel(f"Conjugation: {dye_info['conjugation']}")
-        # self.antigen_layout.addWidget(self.antigen)
-        # self.antigen_layout.addWidget(self.conjugation)
-        # self.info_widget_layout.addLayout(self.antigen_layout)
+        self.address_layout = QHBoxLayout()
+        self.box = QLabel(f"Box: {dye_info['box']}")
+        self.address = QLabel(f"Address: {dye_info['address']}")
+        self.address_layout.addWidget(self.box)
+        self.address_layout.addWidget(self.address)
+        self.info_widget_layout.addLayout(self.address_layout)
 
-        # self.clone_layout = QHBoxLayout()
-        # self.clone = QLabel(f"Clone: {dye_info['clone']}")
-        # self.clonality = QLabel(f"Clonality: {dye_info['clonality']}")
-        # self.clone_layout.addWidget(self.clone)
-        # self.clone_layout.addWidget(self.clonality)
-        # self.info_widget_layout.addLayout(self.clone_layout)
+        self.other_layout = QHBoxLayout()
+        self.price = QLabel(f"Price: ${dye_info['price']}")
+        self.volume = QLabel(f"Volume (μl): {dye_info['volumeUl']}")
+        self.other_layout.addWidget(self.price)
+        self.other_layout.addWidget(self.volume)
+        self.info_widget_layout.addLayout(self.other_layout)
 
-        # self.layout.addWidget(self.info_widget)
+        self.clone_layout = QHBoxLayout()
+        self.clone = QLabel(f"Clone: {dye_info['clone']}")
+        self.clonality = QLabel(f"Clonality: {dye_info['clonality']}")
+        self.clone_layout.addWidget(self.clone)
+        self.clone_layout.addWidget(self.clonality)
+        self.info_widget_layout.addLayout(self.clone_layout)
         
+        self.raised_info = QHBoxLayout()
+        self.raised = QLabel(f"Raised In: {dye_info['raisedIn']}")
+        self.recognizes = QLabel(f"Recognizes: {dye_info['recognizes']}")
+        self.raised_info.addWidget(self.raised)
+        self.raised_info.addWidget(self.recognizes)
+        self.info_widget_layout.addLayout(self.raised_info)
         
-        
-       
-        for key, value in dye_info.items():
-            self.layout.addWidget(QLabel(f"{key}: {value}"))
+        self.stainMethod = QLabel(f"Stain Method: {dye_info['stainingMethod']}", alignment=Qt.Qt.AlignHCenter)
+        self.info_widget_layout.addWidget(self.stainMethod)
+
+        self.layout.addWidget(self.info_widget)
             
         self.confirm_button = QPushButton("Confirm and Close", self)
         self.confirm_button.setObjectName("confirmButton")
@@ -94,5 +103,6 @@ class ResultPopup(QDialog):
                 border-radius: 10px;
                 font-size: 24px;
                 font-weight: bold;
+                margin-top: 25px;
             }}
         """)

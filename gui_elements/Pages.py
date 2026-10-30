@@ -25,6 +25,7 @@ class CameraPage(QWidget):
         self.camera_thread = None
         self.camera = None
         self.scenePixmapItem = None
+        self.order_info = None
 
         self.graphicsView = QGraphicsView()
         self.scene = QGraphicsScene()
@@ -88,7 +89,7 @@ class CameraPage(QWidget):
         popup.show()
 
 class InputPage(QWidget):
-    confirmed = Signal()
+    confirmed = Signal(dict)
     def __init__(self):
         super().__init__()
         self.file_data = None
@@ -144,7 +145,7 @@ class InputPage(QWidget):
     def confirm_upload(self):
         if self.file_data is None: return
         # set to camera page index
-        self.confirmed.emit()
+        self.confirmed.emit(self.file_data)
     
     def show_carousel(self):
         if self.data_carousel is not None:
@@ -158,12 +159,16 @@ class PageStack(QStackedWidget):
         super().__init__()
         self.camera_page = CameraPage(0)
         self.input_page = InputPage()
-        self.input_page.confirmed.connect(lambda: self.show_page(PAGE_CAMERA))
+        self.input_page.confirmed.connect(self.on_confirmed)
         
         self.addWidget(make_label_page("INFO"))
         self.addWidget(self.input_page)
         self.addWidget(self.camera_page)
         self.addWidget(make_label_page("Results"))
+        
+    def on_confirmed(self, file_data):
+        self.camera_page.order_info = file_data
+        self.show_page(PAGE_CAMERA)
         
     def show_page(self, index):
         if index != PAGE_CAMERA:
