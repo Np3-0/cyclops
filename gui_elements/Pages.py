@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QGraphicsView, QLabel, QVBoxLayout, QWidget, QHBoxLayout, QPushButton,
     QFileDialog
 )
-from gui_elements import Camera, ResultPopup, DataCarousel
+from gui_elements import Camera, ResultPopup, DataCarousel, OrderPopup
 import constants
 from utils.get_data import get_data_from_pdf
 
@@ -26,6 +26,7 @@ class CameraPage(QWidget):
         self.camera = None
         self.scenePixmapItem = None
         self.order_info = None
+        self.order_window = None
 
         self.graphicsView = QGraphicsView()
         self.scene = QGraphicsScene()
@@ -42,6 +43,7 @@ class CameraPage(QWidget):
         self.camera_thread.started.connect(self.camera.run)
         self.camera.dye_found.connect(self.show_result)
         self.camera_thread.start()
+        self.show_order()
         
     def stop_cam(self):
         if self.camera_thread is None: return
@@ -56,6 +58,10 @@ class CameraPage(QWidget):
         
         self.scene.clear()
         self.scenePixmapItem = None
+        
+        if self.order_window is not None:
+            self.order_window.close()
+            self.order_window = None
         
     def process_frame(self, frame):
         if self.camera is None: return
@@ -87,6 +93,18 @@ class CameraPage(QWidget):
     def show_result(self, dye_info):
         popup = ResultPopup(dye_info, parent=self)
         popup.show()
+        if self.order_window is not None:
+            self.order_window.check_dye(dye_info)
+    
+    def show_order(self):
+        if self.order_info is None: return
+
+        if self.order_window is not None:
+            self.order_window.close()
+            self.order_window.deleteLater()
+
+        self.order_window = OrderPopup(self.order_info, parent=self)
+        self.order_window.show()
 
 class InputPage(QWidget):
     confirmed = Signal(dict)

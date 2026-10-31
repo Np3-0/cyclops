@@ -18,17 +18,17 @@ class ResultPopup(QDialog):
         self.title_widget_layout.setSpacing(15)
         self.title_widget_layout.setContentsMargins(25, 25, 25, 25)
         
-        self.dye_name = QLabel(f"{self.dye_info['marker']} - {self.dye_info['dye']}", alignment=Qt.AlignTop | Qt.AlignHCenter)
+        self.dye_name = QLabel(f"{self.fmt(self.dye_info['marker'])} - {self.fmt(self.dye_info['dye'])}", alignment=Qt.AlignTop | Qt.AlignHCenter)
         self.dye_name.setObjectName("dyeName")
         self.title_widget_layout.addWidget(self.dye_name)
         
-        self.dye_id = QLabel(f"ID: {self.dye_info['itemId']}", alignment=Qt.AlignTop | Qt.AlignHCenter)
+        self.dye_id = QLabel(f"ID: {self.fmt(self.dye_info['itemId'])}", alignment=Qt.AlignTop | Qt.AlignHCenter)
         self.dye_id.setObjectName("dyeID")
         self.title_widget_layout.addWidget(self.dye_id)
         
         self.expire_layout = QHBoxLayout()
-        self.date_received = QLabel(f"Date Received: {self.dye_info['dateReceived'][:10]}")
-        self.expire_date = QLabel(f"Expiration Date: {self.dye_info['expirationDate'][:10]}")
+        self.date_received = QLabel(f"Date Received: {self.fmt(self.dye_info['dateReceived'], date=True)}")
+        self.expire_date = QLabel(f"Expiration Date: {self.fmt(self.dye_info['expirationDate'], date=True)}")
         self.expire_layout.addWidget(self.date_received)
         self.expire_layout.addWidget(self.expire_date)
         self.title_widget_layout.addLayout(self.expire_layout)
@@ -43,34 +43,34 @@ class ResultPopup(QDialog):
         self.info_widget_layout.setContentsMargins(25, 25, 25, 25)
 
         self.address_layout = QHBoxLayout()
-        self.box = QLabel(f"Box: {dye_info['box']}")
-        self.address = QLabel(f"Address: {dye_info['address']}")
+        self.box = QLabel(f"Box: {self.fmt(dye_info['box'])}")
+        self.address = QLabel(f"Address: {self.fmt(dye_info['address'])}")
         self.address_layout.addWidget(self.box)
         self.address_layout.addWidget(self.address)
         self.info_widget_layout.addLayout(self.address_layout)
 
         self.other_layout = QHBoxLayout()
-        self.price = QLabel(f"Price: ${dye_info['price']}")
-        self.volume = QLabel(f"Volume (μl): {dye_info['volumeUl']}")
+        self.price = QLabel(f"Price: ${self.fmt(dye_info['price'])}")
+        self.volume = QLabel(f"Volume (μl): {self.fmt(dye_info['volumeUl'])}")
         self.other_layout.addWidget(self.price)
         self.other_layout.addWidget(self.volume)
         self.info_widget_layout.addLayout(self.other_layout)
 
         self.clone_layout = QHBoxLayout()
-        self.clone = QLabel(f"Clone: {dye_info['clone']}")
-        self.clonality = QLabel(f"Clonality: {dye_info['clonality']}")
+        self.clone = QLabel(f"Clone: {self.fmt(dye_info['clone'])}")
+        self.clonality = QLabel(f"Clonality: {self.fmt(dye_info['clonality'])}")
         self.clone_layout.addWidget(self.clone)
         self.clone_layout.addWidget(self.clonality)
         self.info_widget_layout.addLayout(self.clone_layout)
         
         self.raised_info = QHBoxLayout()
-        self.raised = QLabel(f"Raised In: {dye_info['raisedIn']}")
-        self.recognizes = QLabel(f"Recognizes: {dye_info['recognizes']}")
+        self.raised = QLabel(f"Raised In: {self.fmt(dye_info['raisedIn'])}")
+        self.recognizes = QLabel(f"Recognizes: {self.fmt(dye_info['recognizes'])}")
         self.raised_info.addWidget(self.raised)
         self.raised_info.addWidget(self.recognizes)
         self.info_widget_layout.addLayout(self.raised_info)
         
-        self.stainMethod = QLabel(f"Stain Method: {dye_info['stainingMethod']}", alignment=Qt.Qt.AlignHCenter)
+        self.stainMethod = QLabel(f"Stain Method: {self.fmt(dye_info['stainingMethod'])}", alignment=Qt.AlignmentFlag.AlignHCenter)
         self.info_widget_layout.addWidget(self.stainMethod)
 
         self.layout.addWidget(self.info_widget)
@@ -106,3 +106,7 @@ class ResultPopup(QDialog):
                 margin-top: 25px;
             }}
         """)
+    def fmt(self, value, date=False):
+        if value is None or value == "":
+            return "N/A"
+        return str(value)[:10] if date else str(value)

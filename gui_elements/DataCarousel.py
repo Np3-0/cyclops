@@ -57,14 +57,14 @@ class CarouselWidget(QWidget):
             }}
             
             QTableView QScrollBar:vertical {{
-                background: {constants.primary_accent}
+                background: {constants.primary_accent};
                 border-radius: 6px;
                 margin: 0px;
                 width: 12px;
             }}
             
              QTableView QScrollBar::handle:vertical {{
-                background: {constants.primary_accent};
+                background: {constants.secondary_bg};
                 min-height: 24px;
                 border-radius: 6px;
             }}
@@ -84,6 +84,11 @@ class CarouselWidget(QWidget):
             }}
         """)
 
+    def set_highlight(self, row):
+        self.model.set_highlight(row)
+        if row is not None:
+            self.view.scrollTo(self.model.index(row, 0))
+            
 class DataCarousel(QWidget):
     def __init__(self, data: dict, parent=None):
         super().__init__(parent)
@@ -129,3 +134,14 @@ class DataCarousel(QWidget):
     def prev_ind(self):
         self.cur_index = (self.cur_index - 1) % len(self.data['steps'])
         self.carousel_stack.setCurrentIndex(self.cur_index)
+    
+    def set_pos(self, page, row):
+        steps = self.data['steps']
+        if not 0 <= page < len(steps): return
+        
+        self.cur_index = page
+        self.carousel_stack.setCurrentIndex(page)
+        
+        for i in range(self.carousel_stack.count()):
+            widget = self.carousel_stack.widget(i)
+            widget.set_highlight(row if i == page else None)

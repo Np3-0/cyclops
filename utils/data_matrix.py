@@ -1,24 +1,21 @@
 from ppf.datamatrix import DataMatrix
-import pandas as pd
+from pathlib import Path
 from .get_data import get_dye_data
 
-# creates a data matrix from a link, saves to file to be printed
-def gen_matrix(url: str, filename: str = "datamatrix_code.svg"):
-    dm = DataMatrix(url)
+OUT_DIR = Path(__file__).resolve().parent.parent / "datamatrix"
 
+# creates a data matrix from a link, saves to file to be printed
+def gen_matrix(data: str, filename):
+    dm = DataMatrix(data)
     with open(filename, "w", encoding="utf-8") as f:
         f.write(dm.svg())
 
-    print("Data Matrix saved successfully!")
-    
 def gen_all_matrix():
-    data = get_dye_data()
-    for row in data.itertuples(index=False):
-        url = ""
-        if type(row.itemId) is not str:
-            url = row.dye
-        else:
-            url = row.itemId
-        print(url)
-        filename = f"../datamatrix/datamatrix_{url}.svg"
-        gen_matrix(url, filename)
+    OUT_DIR.mkdir(exist_ok=True)
+    for row in get_dye_data().itertuples(index=False):
+        code = row.itemId if isinstance(row.itemId, str) else str(row.id)
+        print(code)
+        gen_matrix(code, OUT_DIR / f"datamatrix_{code}.svg")
+
+if __name__ == "__main__":
+    gen_all_matrix()
